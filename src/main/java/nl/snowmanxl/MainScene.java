@@ -72,7 +72,7 @@ public class MainScene extends GameApplication {
 //                    if(previousBatFrame > 0) {
                     var current = System.currentTimeMillis();
                     var diff = current - previousBatFrame;
-                    System.out.println(current + " | " + Thread.currentThread().getName() + " frametime: " + diff + " | BAT_FRAME");
+                    System.out.println(current + " | " + Thread.currentThread().getName() + " frametime: " + diff + " |" + message);
                     previousBatFrame = current;
 //                    }
                 } else if (message.getName().equals("GameUpdate")) {
@@ -86,7 +86,7 @@ public class MainScene extends GameApplication {
 //                    if(previousBallFrame > 0) {
                     var current = System.currentTimeMillis();
                     var diff = current - previousBallFrame;
-                    System.out.println(current + " | " + Thread.currentThread().getName() + " frametime: " + diff + " | BALL_FRAME");
+                    System.out.println(current + " | " + Thread.currentThread().getName() + " frametime: " + diff + " | " + message);
                     previousBallFrame = current;
 //                    }
                     Optional.ofNullable(clientBall).ifPresent(ball -> {
@@ -238,6 +238,7 @@ public class MainScene extends GameApplication {
         bundle.put("x", position.getX());
         bundle.put("y", position.getY());
         bundle.put("direction", direction);
+        bundle.put("time", System.currentTimeMillis());
         server.broadcast(bundle);
     }
 
@@ -253,6 +254,7 @@ public class MainScene extends GameApplication {
         bundle.put("x", position.getX());
         bundle.put("y", position.getY());
         bundle.put("direction", direction);
+        bundle.put("time", System.currentTimeMillis());
         client.broadcast(bundle);
     }
 
@@ -260,6 +262,7 @@ public class MainScene extends GameApplication {
         var bundle = new Bundle("BallPosition");
         bundle.put("x", x);
         bundle.put("y", y);
+        bundle.put("time", System.currentTimeMillis());
         server.broadcast(bundle);
     }
 }
