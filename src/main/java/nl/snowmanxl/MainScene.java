@@ -62,6 +62,7 @@ public class MainScene extends GameApplication {
         client = getNetService().newTCPClient(connectionAddress, 55555);
         client.setOnConnected(connection -> {
             connection.addMessageHandlerFX((Connection<Bundle> conn, Bundle message) -> {
+                System.out.println(System.currentTimeMillis() + " | Received: " + message);
                 if (message.getName().equals("Bat1Position")) {
                     handleBatPosition(message, bat1);
                 } else if (message.getName().equals("GameUpdate")) {
