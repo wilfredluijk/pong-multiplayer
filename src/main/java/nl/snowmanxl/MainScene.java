@@ -42,6 +42,8 @@ public class MainScene extends GameApplication {
     private Entity clientBall;
     private String connectionAddress;
 
+    private long previousBallFrame;
+    private long previousBatFrame;
 
     @Override
     protected void initSettings(GameSettings gameSettings) {
@@ -61,10 +63,18 @@ public class MainScene extends GameApplication {
     private void startupClient() {
         client = getNetService().newTCPClient(connectionAddress, 55555);
         client.setOnConnected(connection -> {
+
+
             connection.addMessageHandlerFX((Connection<Bundle> conn, Bundle message) -> {
-                System.out.println(System.currentTimeMillis() + " | Received: " + message);
+
                 if (message.getName().equals("Bat1Position")) {
                     handleBatPosition(message, bat1);
+                    if(previousBatFrame > 0) {
+                        var current = System.currentTimeMillis();
+                        var diff = current - previousBatFrame;
+                        System.out.println( "frametime: " + diff + " | BAT_FRAME");
+                        previousBatFrame = current;
+                    }
                 } else if (message.getName().equals("GameUpdate")) {
                     if (message.getData().get("event").equals("start")) {
                         spawnClientBall();
@@ -73,6 +83,12 @@ public class MainScene extends GameApplication {
                     var x = (double) message.getData().get("x");
                     var y = (double) message.getData().get("y");
 
+                    if(previousBallFrame > 0) {
+                        var current = System.currentTimeMillis();
+                        var diff = current - previousBallFrame;
+                        System.out.println( "frametime: " + diff + " | BALL_FRAME");
+                        previousBallFrame = current;
+                    }
                     Optional.ofNullable(clientBall).ifPresent(ball -> {
                         ball.getComponent(PhysicsComponent.class).overwritePosition(new Point2D(x, y));
                     });
